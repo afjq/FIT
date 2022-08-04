@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.user.CarItemMapper">
+  <resultMap id="BaseResultMap" type="com.fit.domain.user.CarItem">
+    <id column="caritem_id" jdbcType="INTEGER" property="caritemId" />
+    <result column="caritem_train_name" jdbcType="VARCHAR" property="caritemTrainName" />
+    <result column="caritem_train_price" jdbcType="DECIMAL" property="caritemTrainPrice" />
+    <result column="caritem_train_img" jdbcType="VARCHAR" property="caritemTrainImg" />
+    <result column="caritem_checked" jdbcType="INTEGER" property="caritemChecked" />
+    <association property="caritemCar" javaType="com.fit.domain.user.Car" resultMap="com.fit.mapper.user.CarMapper.BaseResultMap"/>
+  </resultMap>
+  
+  <insert id="insert" parameterType="com.fit.domain.user.CarItem">
+  	insert  into caritem
+  	(caritem_train_name,caritem_train_price,caritem_train_img,caritem_car)
+  	values
+  	(#{carItem.caritemTrainName},#{carItem.caritemTrainPrice},#{carItem.caritemTrainImg},#{carItem.caritemCar.carId})
+  </insert>
+  
+  <!-- 通过购物车Id查找Item集合 -->
+  <select id="findByCarId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  	select * from caritem
+  	where caritem_car = #{carId}
+  </select>
+  
+  <!-- 通过购物车Id，商品名，查询购物车内已有商品 -->
+  <select id="findBytrainNamecarId" resultMap="BaseResultMap">
+  	select * from caritem
+  	where caritem_car = #{carId} and caritem_train_name = #{trainName}
+  </select>
+  
+  <!-- 通过caritemId删除item -->
+  <delete id="delItemByCaritemId">
+  	delete from caritem
+  	where caritem_id = #{caritemId}
+  </delete>
+</mapper>

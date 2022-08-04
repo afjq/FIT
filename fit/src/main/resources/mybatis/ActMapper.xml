@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.user.ActMapper">
+
+	<resultMap type="com.fit.domain.user.Act" id="BaseResultMap">
+		<id column="act_id" property="actId" jdbcType="INTEGER" />
+		<result column="act_name" property="actName" jdbcType="VARCHAR" />
+		<result column="act_desc" property="actDesc" jdbcType="VARCHAR" />
+		<result column="act_img" property="actImg" jdbcType="VARCHAR" />
+		<!-- 对一 ：每个动作只属于一个等级 -->
+		<association property="actGrade" javaType="com.fit.domain.Grade" resultMap="com.fit.mapper.GradeMapper.BaseResultMap"/>
+		<!-- 对一 ：每个动作使用的器械 -->
+		<association property="actFacility" javaType="com.fit.domain.user.Facility" resultMap="com.fit.mapper.user.FacilityMapper.BaseResultMap" />
+		<!-- 一个动作涉及多个肌肉 -->
+		<collection property="muscleList" javaType="java.util.List"
+			ofType="com.fit.domain.user.Muscle">
+			<id column="muscle_id" property="muscleId" />
+			<result column="muscle_name" property="muscleName" />
+		</collection>
+	</resultMap>
+	
+	<!-- 查询所有动作，带出每个动作涉及的肌肉 -->
+	<select id="findAll" resultMap="BaseResultMap">
+		select * from act
+		left join am
+		on
+		am.a_act = act.act_id
+		
+		left join muscle
+		on muscle.muscle_id = am.a_muscle
+		
+		left join grade
+		on grade.grade_id = act.act_grade
+		
+		left join facility
+		on facility.facility_id = act.act_facility;
+	</select>
+	
+	<select id="findById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select * from act
+		left join am
+		on
+		am.a_act = act.act_id
+		
+		left join muscle
+		on muscle.muscle_id = am.a_muscle
+		
+		left join grade
+		on grade.grade_id = act.act_grade
+		
+		left join facility
+		on facility.facility_id = act.act_facility
+		
+		where act_id = #{actId}
+	</select>
+</mapper>

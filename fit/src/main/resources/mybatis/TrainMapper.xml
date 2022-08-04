@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.TrainMapper">
+	<resultMap type="com.fit.domain.Train" id="BaseResultMap">
+		<id column="train_id" property="trainId" jdbcType="INTEGER" />
+		<result column="train_name" property="trainName"
+			jdbcType="VARCHAR" />
+		<result column="train_period" property="trainPeriod"
+			jdbcType="INTEGER" />
+		<result column="train_price" property="trainPrice"
+			jdbcType="DECIMAL" />
+		<result column="train_desc" property="trainDesc"
+			jdbcType="VARCHAR" />
+		<result column="train_img" property="trainImg"
+			jdbcType="VARCHAR" />
+		<!-- <result column="train_grade" property="trainGrade" jdbcType="VARCHAR" 
+			/> -->
+		<association property="trainGrade"
+			javaType="com.fit.domain.Grade"
+			resultMap="com.fit.mapper.GradeMapper.BaseResultMap" />
+		<!-- 对一：每个课程属于一个教练 -->
+		<association property="trainCoach"
+			javaType="com.fit.domain.coach.Coach"
+			resultMap="com.fit.mapper.coach.CoachMapper.BaseResultMap" />
+	</resultMap>
+
+
+	<!-- 东夏 -->
+	<!-- 根据教练Id查找课程计划 -->
+	<select id="findByCoachId" resultMap="BaseResultMap"
+		parameterType="com.fit.domain.Train">
+		select
+		*
+		from train
+		left join coach
+		on coach.coach_id = train.train_coach
+		where train_coach = #{coachId}
+	</select>
+
+	<!-- 北梅 -->
+	<!-- 查看所有的课程计划,同时显示教练信息，呈现给用户购买 -->
+	<select id="findAll" resultMap="BaseResultMap">
+		select
+		*
+		from train
+		left join coach
+		on coach.coach_id = train.train_coach
+		left join grade
+		on grade.grade_id
+		= train.train_grade
+	</select>
+
+	<!-- findByGradeId根据训练等级查看训练 -->
+	<select id="findByGradeId" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		*
+		from train
+		left join coach
+		on coach.coach_id =
+		train.train_coach
+		left join grade
+		on grade.grade_id = train.train_grade
+		where train.train_grade = #{gradeId}
+	</select>
+
+	<!-- 根据Id查找Train -->
+	<select id="findById" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select
+		*
+		from train
+		left join coach
+		on coach.coach_id =
+		train.train_coach
+		left join grade
+		on grade.grade_id = train.train_grade
+		where train.train_id = #{trainId}
+	</select>
+
+
+	<!--添加一门课程 -->
+	<insert id="insert" parameterType="com.fit.domain.Train">
+		insert into train(
+		train_name,
+		train_period,
+		train_price,
+		train_desc,
+		train_img,
+		train_grade,
+		train_coach
+		) values(
+		#{trainName},
+		#{trainPeriod},
+		#{trainPrice},
+		#{trainDesc},
+		#{trainImg},
+		#{trainGrade.gradeId},
+		#{trainCoach.coachId})
+	</insert>
+
+	<!-- 根据课程名称查找课程 -->
+	<select id="findTrainByTrainName"
+		parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		*
+		from train
+		left join coach
+		on coach.coach_id = train.train_coach
+		where train_name = #{trainName}
+	</select>
+
+	<!-- 通过课程Id删除教练课程 -->
+	<delete id="deleteTrainById"
+		parameterType="com.fit.domain.Train">
+		delete from train
+		where train_id = #{trainId}
+	</delete>
+
+
+
+</mapper>

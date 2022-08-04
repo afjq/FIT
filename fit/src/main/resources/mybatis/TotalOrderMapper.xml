@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.admin.TotalOrderMapper">
+
+	<resultMap type="com.fit.domain.admin.TotalOrder" id="BaseResultMap">
+        <id column="totalorder_id" property="totalOrderId" jdbcType="INTEGER"/>
+        <result column="totalorder_createtime" property="totalOrderCreatetime" jdbcType="TIMESTAMP"/>
+        <!-- 对一：订单所属教练 -->
+        <association property="totalOrderCoach" javaType="com.fit.domain.coach.Coach"
+        resultMap="com.fit.mapper.coach.CoachMapper.BaseResultMap" ></association>
+    </resultMap>
+    
+    <resultMap type="com.fit.domain.admin.TotalOrder" id="BaseResultDetailMap" extends="BaseResultMap">
+    	<collection property="tOrderDetailList" 
+    	javaType="java.util.List" 
+    	ofType="com.fit.domain.admin.TOrderDetail"
+    	resultMap="com.fit.mapper.admin.TOrderDetailMapper.BaseResultMap" />
+    </resultMap>
+    
+    <!-- <sql id="Base_Column_List">
+        totalorder_id,totalorder_train,totalorder_coach,totalorder_createtime
+    </sql> -->
+    
+    <select id="findAll" resultMap="BaseResultDetailMap">
+		select *
+		from totalorder
+		
+		left join coach
+		on coach.coach_id = totalorder.totalorder_coach
+		
+		left join t_order_detail
+		on t_order_detail.t_order = totalorder.totalorder_id
+	</select>
+
+<!-- 
+//	根据订单号查找订单
+	TotalOrder findByOrderId(String orderId); -->
+	<select id="findByOrderId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select * from totalorder
+		where totalorder_id = #{orderId}
+	</select>
+	
+	<!-- //	插入总订单
+	void insert(@Param("totalOrder")TotalOrder totalOrder); -->
+	<insert id="insert" parameterType="com.fit.domain.admin.TotalOrder">
+		insert into totalorder
+		(totalorder_id,totalorder_coach,totalorder_createtime)
+		values
+		(#{totalOrder.totalOrderId},
+		#{totalOrder.totalOrderCoach.coachId},
+		#{totalOrder.totalOrderCreatetime})
+	</insert>
+</mapper>

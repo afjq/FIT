@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.user.UserOrderMapper">
+	<resultMap id="BaseResultMap"
+		type="com.fit.domain.user.UserOrder">
+		<id column="userorder_id" jdbcType="VARCHAR" property="userorderId" />
+		<result column="userorder_createtime" jdbcType="TIMESTAMP"
+			property="userorderCreatetime" />
+		<result column="userorder_price" jdbcType="DECIMAL"
+			property="userorderPrice" />
+		<result column="userorder_phone" jdbcType="VARCHAR"
+			property="userorderPhone" />
+		<association property="userorderUser"
+			javaType="com.fit.domain.user.User"
+			resultMap="com.fit.mapper.user.UserMapper.BaseResultMap" />
+		<association property="userorderState"
+			javaType="com.fit.domain.OrderState"
+			resultMap="com.fit.mapper.OrderStateMapper.BaseResultMap" />
+	</resultMap>
+
+	<resultMap type="com.fit.domain.user.UserOrder"
+		id="UOrderDetailBaseResultMap" extends="BaseResultMap">
+		<collection property="userorderDetails"
+			javaType="com.fit.domain.user.UODetail"
+			resultMap="com.fit.mapper.user.UODetailMapper.BaseResultMap" />
+	</resultMap>
+
+
+	<!-- int insert(UserOrder uOrder);// 用户下单，保存订单 -->
+	<insert id="insert"
+		parameterType="com.fit.domain.user.UserOrder">
+		insert into userorder
+		(userorder_id,userorder_createtime,userorder_price,userorder_phone,userorder_user,userorder_state)
+		values
+		(#{uOrder.userorderId},#{uOrder.userorderCreatetime},#{uOrder.userorderPrice},#{uOrder.userorderPhone},#{uOrder.userorderUser.uId},#{uOrder.userorderState.stateId})
+	</insert>
+
+	<!-- UserOrder findByUserOrderId(String userorderId);//根据用户订单编号从查找用户的订单 -->
+	<select id="findByUserOrderId" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select * from userorder
+		left join order_state
+		on
+		order_state.state_id = userorder.userorder_state
+		where userorder_id =
+		#{userorderId}
+	</select>
+
+	<!-- //根据用户的Id查找用户的所有订单 List<UserOrder> findByUserId(Integer userId); -->
+	<select id="findByUserId" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select * from userorder
+		left join order_state
+		on
+		order_state.state_id = userorder.userorder_state
+		where userorder_user =
+		#{userId}
+	</select>
+
+	<!-- // 用户删除订单 void delByOrderId(Integer userorderId); -->
+	<delete id="delByOrderId" parameterType="java.lang.String">
+		delete from userorder
+		where userorder_id = #{userorderId}
+	</delete>
+
+	<!-- //根据用户的Id和订单状态查找用户的所有订单 List<UserOrder> findByUserIdState(@Param("userId")Integer 
+		userId,@Param("stateId")Integer stateId); -->
+	<select id="findByUserIdState" resultMap="BaseResultMap">
+		select * from userorder
+		left join order_state
+		on order_state.state_id =
+		userorder.userorder_state
+		where userorder_user = #{userId} and
+		order_state.state_id=#{stateId}
+	</select>
+
+	<!-- // 修改用户订单状态 void updateOrderStateByOrderId(@Param("stateId")Integer 
+		stateId,@Param("orderId")Integer orderId); -->
+	<update id="updateOrderStateByOrderId">
+		UPDATE userorder
+		SET userorder_state= #{stateId}
+		WHERE userorder_id=#{orderId};
+	</update>
+</mapper>

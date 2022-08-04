@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.coach.CoachMapper">
+
+	<resultMap type="com.fit.domain.coach.Coach"
+		id="BaseResultMap">
+		<id column="coach_id" property="coachId" jdbcType="INTEGER" />
+		<result column="coach_phone" property="coachPhone"
+			jdbcType="VARCHAR" />
+		<result column="coach_name" property="coachName"
+			jdbcType="VARCHAR" />
+		<result column="coach_psw" property="coachPsw"
+			jdbcType="VARCHAR" />
+		<result column="coach_sex" property="coachSex"
+			jdbcType="VARCHAR" />
+		<result column="coach_img" property="coachImg"
+			jdbcType="VARCHAR" />
+		<result column="coach_info" property="coachInfo"
+			jdbcType="VARCHAR" />
+		<result column="coach_salt" property="coachSalt"
+			jdbcType="VARCHAR" />
+		<association property="coachPower"
+			javaType="com.fit.domain.Power"
+			resultMap="com.fit.mapper.PowerMapper.BaseResultMap" />
+	</resultMap>
+
+	<!-- 东夏 -->
+	<select id="findByPhone"
+		parameterType="com.fit.domain.coach.Coach" resultMap="BaseResultMap">
+		select coach_phone,coach_psw from coach
+		where coach_phone = #{coachPhone} and coach_psw = #{coachPsw}
+	</select>
+
+	<!-- 添加教练 -->
+	<insert id="insert" parameterType="com.fit.domain.coach.Coach">
+		insert into coach(
+		coach_phone,
+		coach_name,
+		coach_psw,
+		coach_sex,
+		coach_power,
+		coach_img,
+		coach_info,
+		coach_salt)
+		values(
+		#{coachPhone},
+		#{coachName},
+		#{coachPsw},
+		#{coachSex},
+		#{coachPower.powerId},
+		#{coachImg},
+		#{coachInfo},
+		#{coachSalt})
+	</insert>
+
+	<!-- 通过教练Id删除教练 -->
+	<delete id="deleteCoachById"
+		parameterType="com.fit.domain.coach.Coach">
+		delete from coach
+		where coach_id = #{coachId}
+	</delete>
+
+	<!-- 根据教练Id查找教练 -->
+	<select id="findByCoachId"
+		parameterType="com.fit.domain.coach.Coach" resultMap="BaseResultMap">
+		select * from coach
+		where coach_id = #{coachId}
+	</select>
+
+	<!-- 查找所有教练 -->
+	<select id="selectAll" resultMap="BaseResultMap">
+		select * from coach
+	</select>
+
+	<!-- 根据教练账号查找教练 -->
+	<select id="findByCoachPhone"
+		parameterType="com.fit.domain.coach.Coach" resultMap="BaseResultMap">
+		select * from coach
+		where coach_phone = #{coachPhone}
+	</select>
+
+	<!-- 根据教练姓名模糊查找教练 -->
+	<select id="findByCoachName"
+		parameterType="com.fit.domain.coach.Coach" resultMap="BaseResultMap">
+		select * from coach
+		where coach_name LIKE CONCAT(CONCAT('%',#{coachName},'%'))
+	</select>
+
+
+	<!-- 教练修改头像 -->
+	<update id="updateCoachImg"
+		parameterType="com.fit.domain.coach.Coach">
+		update coach set coach_img = #{coachImg}
+		where coach_id =
+		#{coachId}
+	</update>
+	
+	<!-- 教练修改密码 -->
+	<!-- //教练修改密码
+	int updateCoachPsw(@Param("coach")Coach coach); -->
+	<update id="updateCoachPsw"
+		parameterType="com.fit.domain.coach.Coach">
+		update coach set 
+		coach_psw = #{coach.coachPsw},
+		coach_salt=#{coach.coachSalt}
+		where coach_id =#{coach.coachId}
+	</update>
+
+	<!-- 教练修改个人信息 -->
+	<update id="updateCoach" parameterType="com.fit.domain.coach.Coach">
+		update coach set 
+		coach_phone = #{coachPhone}, 
+		coach_name = #{coachName},  
+		coach_sex = #{coachSex}, 
+		coach_power = #{coachPower.powerId},
+        coach_info = #{coachInfo}
+		where coach_id = #{coachId}
+	</update>
+
+</mapper>

@@ -1,0 +1,38 @@
+#orderTable{
+	margin-top:30px;
+	border:1px solid #c0c0c0;
+	text-align:center;
+	width: 1000px;
+	height:50px;
+}
+
+
+.orderFoot{
+/* 	float:right; */
+    width:100px;
+	margin-top:15px;
+	margin-left:72%;
+	margin-bottom:40px;
+}
+.panel{
+	background-color:#F0F0F0;
+	width: 550px;
+    height:100%;
+    top:75px;
+    margin-left:25%;
+}
+.panel th{
+	background:#c0c0c0 ;
+	color:#808080;
+}
+.panel td{
+	border:1px solid #c0c0c0;
+	background:#FCF;
+	padding:10px 0;
+	
+}
+
+.span{
+	margin-top:100px;
+	margin-left:25%;
+}

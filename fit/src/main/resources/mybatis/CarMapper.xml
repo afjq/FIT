@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.user.CarMapper">
+
+  <resultMap id="BaseResultMap" type="com.fit.domain.user.Car">
+    <id column="car_id" jdbcType="INTEGER" property="carId" />
+    <result column="car_totalprice" jdbcType="DOUBLE" property="carTotalPrice" />
+    <result column="car_allchecked" jdbcType="TINYINT" property="allChecked" />
+    <association property="carUser" javaType="com.fit.domain.user.User" resultMap="com.fit.mapper.user.UserMapper.BaseResultMap"/>
+  </resultMap>
+  
+  <!-- 带购物车项集合的结果集 -->
+  <resultMap type="com.fit.domain.user.Car" id="CatItemBaseResultMap" extends="BaseResultMap">
+  	<collection 
+  	property="carItem" 
+  	javaType="com.fit.domain.user.CarItem" 
+  	resultMap="com.fit.mapper.CarItemMapper.BaseResultMap"/>
+  </resultMap>
+  
+  <insert id="insert" parameterType="com.fit.domain.user.Car">
+  	insert into car 
+  	(car_user,car_totalprice)
+  	values
+  	(#{car.carUser.uId},#{car.carTotalPrice})
+  </insert>
+  
+  <!-- 根据用户Id查找用户的购物车 -->
+  <select id="findByUserId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  	select * from car 
+  	left join user
+  	on user.u_id = car.car_user
+  	where car_user = #{userId}
+  </select>
+  
+</mapper>

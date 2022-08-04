@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.admin.TOrderDetailMapper">
+    <resultMap type="com.fit.domain.admin.TOrderDetail" id="BaseResultMap">
+       <result column="t_order_detail_name" property="tOrderDetailName" jdbcType="VARCHAR" />
+       <result column="t_order_detail_price" property="tOrderDetailPrice" jdbcType="DOUBLE"/>
+       <!-- 对一： 一个订单详情属于一个订单 -->
+       <association property="tOrder" javaType="com.fit.domain.admin.TotalOrder" 
+       resultMap="com.fit.mapper.admin.TotalOrderMapper.BaseResultMap"></association>
+    </resultMap>
+    
+    <select id="findByTOrderId" resultMap="BaseResultMap">
+       select * from t_order_detail
+       where t_order = #{totalOrderId}
+    </select>
+
+	<!-- //	插入总订单详情
+	void insert(TOrderDetail tOrderDetail); -->
+	<insert id="insert"  parameterType="com.fit.domain.admin.TOrderDetail">
+		insert into t_order_detail
+		(t_order_detail_name,t_order_detail_price,t_order)
+		values
+		(#{tOrderDetail.tOrderDetailName},
+		#{tOrderDetail.tOrderDetailPrice},
+		#{tOrderDetail.tOrder.totalOrderId})
+	</insert>
+</mapper>

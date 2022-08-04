@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.user.UODetailMapper">
+	<resultMap id="BaseResultMap" type="com.fit.domain.user.UODetail">
+		<id column="uo_detail_id" jdbcType="INTEGER" property="uoDetailId" />
+		<result column="uo_detail_train_name" jdbcType="VARCHAR"
+			property="uoDetailTrainName" />
+		<result column="uo_detail_train_price" jdbcType="DECIMAL"
+			property="uoDetailTrainPrice" />
+		<association property="uo"
+			javaType="com.fit.domain.user.UserOrder"
+			resultMap="com.fit.mapper.user.UserOrderMapper.BaseResultMap" />
+	</resultMap>
+
+	<!-- int insert(UODetail uODetail);// 用户下单，保存订单明细 -->
+	<insert id="insert" parameterType="com.fit.domain.user.UODetail">
+		insert into u_order_detail
+		(uo_detail_train_name,uo_detail_train_price,uo)
+		values
+		(#{uODetail.uoDetailTrainName},#{uODetail.uoDetailTrainPrice},#{uODetail.uo.userorderId})
+	</insert>
+
+	<!-- List<UODetail> findByOrderId(String orderId);//根据用户订单编号从查找用户的订单 -->
+	<select id="findByOrderId" resultMap="BaseResultMap">
+		select * from u_order_detail
+		where uo = #{orderId}
+	</select>
+
+	<!-- // 用户删除订单详情(根据订单Id) void delByOrderId(Integer userorderId); -->
+	<delete id="delByOrderId" parameterType="java.lang.String">
+		delete from
+		u_order_detail
+		where uo = #{userorderId}
+	</delete>
+</mapper>

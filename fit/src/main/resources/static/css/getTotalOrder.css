@@ -1,0 +1,44 @@
+.segmenting-line {
+    position: relative;
+    height: 20px;
+    margin: 20px 0;
+    background:#fff;
+}
+.segmenting-line hr {
+    position: absolute;
+    width: 90%;
+    top: 10px;
+    border: none;
+    height: 1px;
+    margin: 0;
+    background-image: linear-gradient(to right,#fff,#eee 50%,#fff);
+    background-repeat: no-repeat;
+}
+.segmenting-line div {
+    text-align: center;
+    line-height: 20px;
+    position: absolute;
+    width: 90%;
+}
+
+.segmenting-line div span {
+    margin: auto;
+    padding: 0 20px;
+    display: inline-block;
+    background-color: #fdfdfd;
+    font-size: 16px;
+    color: #aaa;
+}
+.panel{
+	background-color:#F0F0F0;
+}
+
+.o-hiyd-footer{
+      /* position:fixed; 
+      bottom:0; */
+      position:fixed; 
+      left:0px; 
+      bottom:0px;
+       width:100%; 
+       height:80px;
+ }

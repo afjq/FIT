@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.coach.COrderDetailMapper">
+   
+   <resultMap id="BaseResultMap" type="com.fit.domain.coach.COrderDetail">
+   <id column="co_detail_id" property="coDetailId" jdbcType="INTEGER" />
+    <result column="co_detail_train_name" property="coDetailTrainName" jdbcType="VARCHAR" />
+    <result column="co_detail_train_price" property="coDetailTrainPrice" jdbcType="DOUBLE" />
+    <!-- 对一：一个订单详细信息对应于一个订单 -->
+    <association property="coDetailOrder" javaType="com.fit.domain.coach.COrderDetail" resultMap="com.fit.mapper.coach.CoachOrderMapper.BaseResultMap"/>
+  </resultMap>
+  
+  
+   <!-- 通过订单id查找订单详情 -->
+  <select id="findBycoDetailOrderId" resultMap="BaseResultMap">
+  	select * from c_order_detail
+  	where co_detail_order = #{CoachOrderId}
+  </select>
+
+<!-- // 支付成功，插入订单到教练订单详情 void insert(@Param("cOrderDetail")COrderDetail 
+		cOrderDetail); -->
+	<insert id="insert" parameterType="com.fit.domain.coach.COrderDetail">
+		insert into c_order_detail
+		(co_detail_train_name,co_detail_train_price,co_detail_order)
+		values
+		(#{cOrderDetail.coDetailTrainName},
+		#{cOrderDetail.coDetailTrainPrice},
+		#{cOrderDetail.coDetailOrder.coachOrderId})
+	</insert>
+
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.user.ShopOrderMapper">
+  <resultMap id="BaseResultMap" type="com.fit.domain.user.ShopOrder">
+    <id column="shoporder_id" jdbcType="VARCHAR" property="shoporderId" />
+    <result column="shoporder_price" jdbcType="DECIMAL" property="shoporderPrice" />
+    <association property="shoporderUser" javaType="com.fit.domain.user.User" resultMap="com.fit.mapper.user.UserMapper.BaseResultMap"/>
+  </resultMap>
+  
+  <insert id="insert" parameterType="com.fit.domain.user.ShopOrder">
+  	insert into shoporder(shoporder_id,shoporder_user,shoporder_price)
+  	values(#{shopOrder.shoporderId},#{shopOrder.shoporderUser.uId},#{shopOrder.shoporderPrice})
+  </insert>
+  
+  <!-- //	根据当前用户查询订单
+	ShopOrder findByUId(Integer uId); -->
+  <select id="findByUId" resultMap="BaseResultMap">
+  	select * from shoporder
+  	where shoporder_user = #{uId}
+  </select>
+  
+  <!-- //	支付成功后，根据订单Id清除记录
+	void delShopOrder(String orderId); -->
+	<delete id="delShopOrder" parameterType="java.lang.String">
+		delete from shoporder 
+		where shoporder_id = #{orderId}
+	</delete>
+	
+	<!-- //	清空用户Id清空该用户的临时单
+	void delByUId(Integer uId); -->
+	<delete id="delByUId" parameterType="java.lang.Integer">
+		delete from shoporder 
+		where shoporder_user = #{uId}
+	</delete>
+</mapper>

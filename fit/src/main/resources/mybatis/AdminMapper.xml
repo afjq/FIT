@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.admin.AdminMapper">
+
+	<resultMap type="com.fit.domain.admin.Admin" id="BaseResultMap">
+        <id column="admin_id" property="adminId" jdbcType="INTEGER"/>
+        <result column="admin_phone" property="adminPhone" jdbcType="VARCHAR"/>
+        <result column="admin_psw" property="adminPsw" jdbcType="VARCHAR"/>
+        <!-- <result column="admin_power" property="adminPower" jdbcType="INTEGER"/> -->
+        <association property="adminPower" javaType="com.fit.domain.Power" 
+                     resultMap="com.fit.mapper.PowerMapper.BaseResultMap"/>
+    </resultMap>
+    <select id="findByAdminPhone" resultMap="BaseResultMap" parameterType="com.fit.domain.admin.Admin">
+        select *
+        from admin 
+        where admin_phone = #{adminPhone}
+    </select>
+
+</mapper>

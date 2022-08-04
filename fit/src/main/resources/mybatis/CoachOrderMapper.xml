@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.coach.CoachOrderMapper">
+
+	<resultMap type="com.fit.domain.coach.CoachOrder"
+		id="BaseResultMap">
+		<id column="coachorder_id" property="coachOrderId"
+			jdbcType="VARCHAR" />
+		<result column="coachorder_createtime"
+			property="coachOrderCreatetime" jdbcType="TIMESTAMP" />
+		<association property="coachOrderCoach"
+			javaType="com.fit.domain.coach.Coach"
+			resultMap="com.fit.mapper.coach.CoachMapper.BaseResultMap" />
+	</resultMap>
+
+	<!-- <sql id="Base_Column_List"> coachorder_id,coachorder_coach,coachorder_createtime 
+		</sql> -->
+	<!-- 根据教练id查找教练的订单 -->
+	<select id="findByCoachId" parameterType="java.lang.Integer"
+		resultMap="BaseResultMap">
+		select *
+		from coachorder
+		left join coach
+		on coach.coach_id =
+		coachorder.coachorder_coach
+		where coachorder_coach = #{coachId}
+	</select>
+
+	<!--// 支付成功，插入订单到教练订单表 void insert(CoachOrder coachOrder); -->
+	<insert id="insert" parameterType="com.fit.domain.coach.CoachOrder">
+		insert into coachorder
+		(coachorder_id,
+		coachorder_coach,
+		coachorder_createtime,
+		coachorder_user)
+		values
+		(#{coachOrder.coachOrderId},
+		#{coachOrder.coachOrderCoach.coachId},
+		#{coachOrder.coachOrderCreatetime},
+		#{coachOrder.coachOrderUser.uId})
+	</insert>
+
+	<!-- // 根据订单号查找订单 CoachOrder findByOrderId(String orderId); -->
+	<select id="findByOrderId" resultMap="BaseResultMap">
+		select * from coachorder
+		where coachorder_id = #{orderId}
+
+	</select>
+</mapper>

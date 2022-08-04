@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fit.mapper.user.UserMapper">
+  <resultMap id="BaseResultMap" type="com.fit.domain.user.User">
+    <id column="u_id" jdbcType="INTEGER" property="uId" />
+    <result column="u_phone" jdbcType="VARCHAR" property="uPhone" />
+    <result column="u_name" jdbcType="VARCHAR" property="uName" />
+    <result column="u_psw" jdbcType="VARCHAR" property="uPsw" />
+    <result column="u_sex" jdbcType="VARCHAR" property="uSex" />
+    <result column="u_age" jdbcType="INTEGER" property="uAge" />
+    <!-- <result column="u_power" jdbcType="INTEGER" property="uPower" /> -->
+    <result column="u_img" jdbcType="VARCHAR" property="uImg" />
+    <result column="u_salt" jdbcType="VARCHAR" property="uSalt" />
+    <association property="uPower" javaType="com.fit.domain.Power" resultMap="com.fit.mapper.PowerMapper.BaseResultMap"/>
+  </resultMap>
+  
+  <!-- 用户登录 -->
+  <select id="findByPhone" parameterType="com.fit.domain.user.User" resultMap="BaseResultMap">
+    select * from user
+    where u_phone = #{uPhone,jdbcType=VARCHAR} and u_psw = #{uPsw,jdbcType=VARCHAR}
+  </select>
+  
+  <!-- 用户查看个人信息 -->
+  <select id="selectByUserPhone" parameterType="com.fit.domain.user.User" resultMap="BaseResultMap">
+      select * from user
+      where u_phone = #{uPhone}
+  </select>
+  
+ <!--  用户注册 -->
+  <insert id="insert" parameterType="com.fit.domain.user.User">
+    insert into user (
+      u_phone, 
+      u_name, 
+      u_psw, 
+      u_sex, 
+      u_age, 
+      u_power, 
+      u_img,
+      u_salt)
+    values (
+      #{uPhone,jdbcType=VARCHAR}, 
+      #{uName,jdbcType=VARCHAR}, 
+      #{uPsw,jdbcType=VARCHAR}, 
+      #{uSex,jdbcType=VARCHAR}, 
+      #{uAge,jdbcType=INTEGER}, 
+      #{uPower.powerId}, 
+      #{uImg,jdbcType=VARCHAR},
+      #{uSalt,jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- 用户查看个人信息 -->
+  <select id="findByUphone" parameterType="com.fit.domain.user.User" resultMap="BaseResultMap">
+      select * from user
+      where u_phone = #{uPhone}
+  </select>
+  
+  <!-- 修改用户个人信息 -->
+  <update id="updateUser" parameterType="com.fit.domain.user.User">
+      update user set 
+      u_phone = #{uPhone}, 
+      u_name = #{uName}, 
+      u_sex = #{uSex}, 
+      u_age = #{uAge}, 
+      u_power = #{uPower.powerId} 
+      where u_id = #{uId}
+  </update>
+  
+  <!-- 用户修改密码 -->
+	<!-- //用户修改密码
+	int updateUPsw(@Param("user")User user); -->
+	<update id="updateUPsw"
+		parameterType="com.fit.domain.user.User">
+		update user set 
+		u_psw = #{user.uPsw},
+		u_salt=#{user.uSalt}
+		where u_id =#{user.uId}
+	</update>
+  
+  <!-- 修改用户头像 -->
+  <update id="updateUImg" parameterType="com.fit.domain.user.User">
+      update user set u_img = #{uImg}
+      where u_id = #{uId}
+  </update><!-- 根据用户Id进行查找 -->
+  
+  
+  <select id="findUserById" parameterType="com.fit.domain.user.User" resultMap="BaseResultMap">
+      select * from user
+      where u_id = #{uId}
+  </select>
+  
+
+</mapper>
